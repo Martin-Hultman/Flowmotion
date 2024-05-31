@@ -1,0 +1,144 @@
+{
+    "_typedefs":
+    {
+        "FlowmotionStruct":
+        {
+            "purpose": "Flowmotion struct containing the results of flowmotion analysis of a signal",
+            "type": "struct",
+            "fields":
+            [
+                {"name": "t"             , "type": ["numeric", "vector"]},
+                {"name": "X"             , "type": ["numeric", "vector"]},
+                {"name": "XNorm"         , "type": ["numeric", "vector"]},
+                {"name": "XClean"        , "type": ["numeric", "vector"]},
+                {"name": "Fs"            , "type": ["numeric", "scalar"]},
+                {"name": "OutlierPercent", "type": ["numeric", "scalar"]},
+                {"name": "OutlierIndex"  , "type": ["numeric", "scalar"]},
+                {"name": "Scalogram"     , "type": ["numeric", "2d"]},
+                {"name": "f"             , "type": ["numeric", "vector"]},
+                {"name": "tAverage"      , "type": ["numeric", "vector"]},
+                {"name": "tAverageNum"   , "type": ["numeric", "vector"]},
+                {"name": "tfAverage"     , "type": ["numeric", "vector"]},
+                {"name": "tfAverageNum"  , "type": ["numeric", "vector"]}
+            ]
+        },
+
+        "FlowmotionStruct":
+        {
+            "purpose": "Flowmotion struct containing the results of flowmotion analysis of a signal",
+            "type": "struct",
+            "fields":
+            [
+                {"name": "t"             , "type": ["numeric", "vector"]},
+                {"name": "X"             , "type": ["numeric", "vector"]},
+                {"name": "XNorm"         , "type": ["numeric", "vector"]},
+                {"name": "XClean"        , "type": ["numeric", "vector"]},
+                {"name": "Fs"            , "type": ["numeric", "scalar"]},
+                {"name": "OutlierPercent", "type": ["numeric", "scalar"]},
+                {"name": "OutlierIndex"  , "type": ["numeric", "scalar"]},
+                {"name": "XFit"          , "type": ["numeric", "vector"]},
+                {"name": "ModelParams"   , "type": ["numeric", "vector"]},
+                {"name": "GOF"           , "type": ["struct"]},
+                {"name": "Scalogram"     , "type": ["numeric", "2d"]},
+                {"name": "f"             , "type": ["numeric", "vector"]},
+                {"name": "tAverage"      , "type": ["numeric", "vector"]},
+                {"name": "tAverageNum"   , "type": ["numeric", "vector"]},
+                {"name": "tfAverage"     , "type": ["numeric", "vector"]},
+                {"name": "tfAverageNum"  , "type": ["numeric", "vector"]}
+            ]
+        }
+    },
+
+    "Flowmotion_ComputeAndProcessScalogram":
+    {
+        "inputs":
+        [
+            {"name":"X" , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"Fs", "kind":"required", "type":["numeric", "scalar"]}
+        ]
+    },
+
+    "Flowmotion_FilterMotionArtifacts":
+    {
+        "inputs":
+        [
+            {"name":"X" , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"Fs", "kind":"required", "type":["numeric", "scalar"]},
+            {"name":"FilterLength", "kind":"namevalue", "type":["numeric", "scalar"]},
+            {"name":"Threshold"   , "kind":"namevalue", "type":["numeric", "scalar"]},
+            {"name":"Widening"    , "kind":"namevalue", "type":["numeric", "scalar"]}
+        ]
+    },
+
+    "Flowmotion_FindReperfusionPeak":
+    {
+        "inputs":
+        [
+            {"name":"t" , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"X" , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"Fs", "kind":"required", "type":["numeric", "scalar"]},
+            {"name":"OcclusionEndIndex", "kind":"namevalue", "type":["numeric", "scalar"]}
+        ]
+    },
+
+    "Flowmotion_FitReperfusion":
+    {
+        "inputs":
+        [
+            {"name":"t" , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"X" , "kind":"required", "type":["numeric", "vector"]}
+        ]
+    },
+
+    "Flowmotion_GetCOI":
+    {
+        "inputs":
+        [
+            {"name":"t" , "kind":"required", "type":["numeric", "vector"]}
+        ]
+    },
+
+    "Flowmotion_PlotFlowmotion":
+    {
+        "inputs":
+        [
+            {"name":"FM" , "kind":"required", "type":["struct:FlowmotionStruct"]}
+        ]
+    },
+
+    "Flowmotion_PlotScalogram":
+    {
+        "inputs":
+        [
+            {"name":"t"        , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"f"        , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"Scalogram", "kind":"required", "type":["numeric", "2d"]},
+            {"name":"Parent"       , "kind":"namevalue", "type":["matlab.graphics.axis.Axes"]},
+            {"name":"Colormap"     , "kind":"namevalue", "type":[["numeric", "2d"],["string","scalar"],["char"]]},
+            {"name":"TextColor"    , "kind":"namevalue", "type":[["numeric","vector"],["string","scalar"],["char"]]},
+            {"name":"TextAlignment", "kind":"namevalue", "type":["string","scalar","choices={'left','right'}"]},
+            {"name":"COIAlpha"     , "kind":"namevalue", "type":["numeric","scalar"]}
+        ]
+    },
+
+    "Flowmotion_ProcessSignal":
+    {
+        "inputs":
+        [
+            {"name":"t" , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"X" , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"Fs", "kind":"required", "type":["numeric", "scalar"]},
+            {"name":"Type", "kind":"namevalue", "type":["string","scalar","choices={'Baseline','Reperfusion'}"]}
+        ]
+    },
+
+    "Flowmotion_RemoveCOI":
+    {
+        "inputs":
+        [
+            {"name":"Scalogram", "kind":"required", "type":["numeric", "2d"]},
+            {"name":"f"        , "kind":"required", "type":["numeric", "vector"]},
+            {"name":"COI"      , "kind":"required", "type":["numeric", "vector"]}
+        ]
+    }
+}
