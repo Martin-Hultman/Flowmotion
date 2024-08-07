@@ -1,8 +1,9 @@
 function FM = Flowmotion_ComputeAndProcessScalogram(X,Fs)
 % Flowmotion_ComputeAndProcessScalogram takes a pre-processed signal X and
 % computes the wavelet power scalogram, removes the cone-of-influence, and
-% computes the time-averaged power spectum and time-frequency-averaged
-% flowmotion power values.
+% computes the time-averaged power spectum, frequency-averaged
+% time-resolved flowmotion signals, and time-frequency-averaged flowmotion
+% power values.
 %
 % Input:
 %   X  - Signal
@@ -14,6 +15,8 @@ function FM = Flowmotion_ComputeAndProcessScalogram(X,Fs)
 %      : f            - Frequency axis of the scalogram, decreasing order
 %      : tAverage     - Time-averaged power spectrum
 %      : tAverageNum  - Number of valid time points for each frequency of the power spectrum
+%      : fAverage     - Frequency-averaged (time-resolved) flowmotion power
+%      : fAverageNum  - Number of valid data points for each time point of the frequency averages
 %      : tfAverage    - Time-frequency-averaged flowmotion power for each frequency interval
 %      : tfAverageNum - Number of valid points for each average in tfAverage
 %
@@ -49,16 +52,26 @@ tAverageNum = sum(~isnan(ScalogramMasked),2);
 fBounds = Flowmotion_DefineFrequencyIntervals();
 Nf = length(fBounds)-1;
 
-% Compute the time-frequency average in each flowmotion interval
+% Compute the frequency average and time-frequency average in each
+% flowmotion interval
 tfAverage = nan(1,Nf);
 tfAverageNum = nan(1,Nf);
 
+fAverage = nan(length(X),Nf);
+fAverageNum = nan(length(X),Nf);
+
 for i = 1:Nf
     fMask = f < fBounds(i) & f > fBounds(i+1);
+
+    % Time-frequency average excluding COI
     tfAverageNum(i)  = sum(~isnan(ScalogramMasked(fMask,:)), "all");
     if (tfAverageNum(i) > 0)
         tfAverage(i) = mean(ScalogramMasked(fMask,:), "all", "omitmissing");
     end
+
+    % Frequency average excluding COI
+    fAverageNum(:,i) = sum(~isnan(ScalogramMasked(fMask,:)), 1, "omitmissing");
+    fAverage(:,i) = mean(ScalogramMasked(fMask,:), 1, "omitmissing");
 end
 
 % Collect outputs in a struct to keep it organized
@@ -67,6 +80,8 @@ FM = struct( ...
     "f"           , single(f), ...
     "tAverage"    , single(tAverage), ...
     "tAverageNum" , single(tAverageNum), ...
+    "fAverage"    , single(fAverage), ...
+    "fAverageNum" , single(fAverageNum), ...
     "tfAverage"   , single(tfAverage), ...
     "tfAverageNum", single(tfAverageNum));
 
